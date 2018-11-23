@@ -21,8 +21,45 @@ namespace OmegaForce3
 {
     public class Compression
     {
-        public Compression()
-        {
-        }
+      private static final String COMP_PATH_WIN = @"\lib\NDS_Comp_CUE\";
+      private static final String COMP_PATH_UNIX = "/lib/NDS_Comp_CUE/";
+
+      public static Node DecompressLzx(Node node)
+      {
+          string tempFile = Path.GetTempFileName();
+
+          using (var substream = new DataStream(node.Stream, 4, node.Stream.Length - 4))
+          {
+              substream.WriteTo(tempFile);
+          }
+
+          string program = COMP_PATH_WIN + "lzs.exe";
+
+          string arguments = "-d " + tempFile;
+          if (Environment.OSVersion.Platform != PlatformID.Win32NT)
+          {
+              program = COMP_PATH_UNIX + "lzs";
+          }
+
+          Process process = new Process();
+          process.StartInfo.FileName = program;
+          process.StartInfo.Arguments = arguments;
+          process.StartInfo.UseShellExecute = false;
+          process.StartInfo.CreateNoWindow = true;
+          process.StartInfo.ErrorDialog = false;
+          process.StartInfo.RedirectStandardOutput = true;
+          process.Start();
+
+          process.WaitForExit();
+
+          DataStream fileStream = new DataStream(tempFile, FileOpenMode.Read);
+          DataStream memoryStream = new DataStream();
+          fileStream.WriteTo(memoryStream);
+
+          fileStream.Dispose();
+          File.Delete(tempFile);
+
+          return new Node(node.Name, new BinaryFormat(memoryStream));
+      }
     }
 }
