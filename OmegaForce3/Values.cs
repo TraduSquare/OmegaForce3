@@ -48,6 +48,7 @@ namespace OmegaForce3
         public static Int32 StartBlock;
         public static Int16 TypeBlock;
         public static Int16 Name;
+        public static UInt16 textxd;
         public static byte[] text;
         public static byte[] header;
         public static List<string> textx = new List<string>();
@@ -56,15 +57,30 @@ namespace OmegaForce3
         public static List<Int32> headerx2 = new List<int>();
         public static string Name_string;
 
-        public static Dictionary<Int16, string> names = new Dictionary<Int16, string>() {
-            {0x1D00, "Jack"},
-            {0x1E00, "(Queen)Tia"},
+        public static Dictionary<UInt16, string> reemplace = new Dictionary<UInt16, string>() {
+            {0x001D, "[Jack]"},
+            {0x001E, "[(Queen)Tia]"},
+            {0xEC13, "[Efect 1]"},
+            {0xE113, "[Efect 2]"},
+            {0xE114, "[Efect 3]"},
+            {0xE115, "[Efect 3]"},
+            {0xE116, "[Efect 3]"},
+            {0xEC02, "(Push)\n"},
+            {0x01EC, "[End dialog]\n"},
+            {0xEC00, "[Start conversation]"},
+            {0x0000, "[BLANK]"},
+            {0xEC01, "\n[Start dialog]\n"},
         };
 
-        public static Dictionary<Int16, string> flags = new Dictionary<Int16, string>() {
-            {0x01EC, "Start dialog"},
-            {0x13EC, "Efecto 2"},
+        /*public static Dictionary<UInt16, string> flagsingame = new Dictionary<UInt16, string>() {
+
+
         };
+
+        public static Dictionary<UInt16, string> flags = new Dictionary<UInt16, string>() {
+            
+
+        };*/
 
     }
 }
