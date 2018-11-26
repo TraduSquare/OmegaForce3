@@ -17,49 +17,48 @@
 //
 
 using System;
+using System.Diagnostics;
+using System.IO;
+using Yarhl.FileFormat;
+using Yarhl.FileSystem;
+using Yarhl.IO;
+
 namespace OmegaForce3
 {
-    public class Compression
+    public static class Compression
     {
-      private static final String COMP_PATH_WIN = @"\lib\NDS_Comp_CUE\";
-      private static final String COMP_PATH_UNIX = "/lib/NDS_Comp_CUE/";
+        private static readonly String COMP_PATH_WIN = @"\lib\NDS_Comp_CUE\";
+        private static readonly String COMP_PATH_UNIX = "/lib/NDS_Comp_CUE/";
+        public static DataStream DecompressLzx(DataStream file)
+        {
+            string tempFile = Path.GetTempFileName();
+            file.WriteTo(tempFile);
 
-      public static Node DecompressLzx(Node node)
-      {
-          string tempFile = Path.GetTempFileName();
+            string program = System.IO.Path.GetFullPath(@"../../") + COMP_PATH_WIN + "lzx.exe";
 
-          using (var substream = new DataStream(node.Stream, 4, node.Stream.Length - 4))
-          {
-              substream.WriteTo(tempFile);
-          }
+            string arguments = "-d " + tempFile;
 
-          string program = COMP_PATH_WIN + "lzs.exe";
+            if (Environment.OSVersion.Platform != PlatformID.Win32NT)
+            {
+                program = System.IO.Path.GetFullPath(@"../../") + COMP_PATH_UNIX + "lzx";
+            }
 
-          string arguments = "-d " + tempFile;
-          if (Environment.OSVersion.Platform != PlatformID.Win32NT)
-          {
-              program = COMP_PATH_UNIX + "lzs";
-          }
+            Process process = new Process();
+            process.StartInfo.FileName = program;
+            process.StartInfo.Arguments = arguments;
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.CreateNoWindow = true;
+            process.StartInfo.ErrorDialog = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.Start();
 
-          Process process = new Process();
-          process.StartInfo.FileName = program;
-          process.StartInfo.Arguments = arguments;
-          process.StartInfo.UseShellExecute = false;
-          process.StartInfo.CreateNoWindow = true;
-          process.StartInfo.ErrorDialog = false;
-          process.StartInfo.RedirectStandardOutput = true;
-          process.Start();
+            process.WaitForExit();
 
-          process.WaitForExit();
+            DataStream streamNew = new DataStream(tempFile, FileOpenMode.Read);
 
-          DataStream fileStream = new DataStream(tempFile, FileOpenMode.Read);
-          DataStream memoryStream = new DataStream();
-          fileStream.WriteTo(memoryStream);
+            File.Delete(tempFile);
 
-          fileStream.Dispose();
-          File.Delete(tempFile);
-
-          return new Node(node.Name, new BinaryFormat(memoryStream));
-      }
+            return streamNew;
+        }
     }
 }

@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Yarhl.IO;
 
 namespace OmegaForce3 {
     class Export {
@@ -49,6 +49,9 @@ namespace OmegaForce3 {
                     Values.magic = reader.ReadInt32(); //Get the magic
                     reader.BaseStream.Position = Values.positions[i]; //Get back to the position
                     byte[] array = reader.ReadBytes(Values.sizes[i]); //Get the byte array
+
+                    // *** QUitamos el encrypted
+
                     if (Values.types[i] == 0x0) { //Encrypted
                         if (Values.magic == 0x4D534720) { //Text file
                             Values.istext = true;
@@ -74,12 +77,39 @@ namespace OmegaForce3 {
         }
         //Temporal - only for extract files
         public void Extract(string file, byte[] array) {
+
             using (BinaryWriter writer = new BinaryWriter(File.Open(file + ".exportedtest", FileMode.Create))) { //Make a decrypted file
                 for (int i = 0; i < array.Length; i++) //Make a bucle to write the header
                 {
                     writer.Write((byte)(array[i])); //Write the no encrypted data
                 }
             }
+        }
+
+        public DataStream Decompress(string file)
+        {
+            using(DataStream stream = new DataStream(file, FileOpenMode.Read)){
+
+                DataReader reader = new DataReader(stream);
+
+                reader.Stream.PushCurrentPosition();
+
+                if (IsCompressed(reader.ReadByte()))
+                {
+                    reader.Stream.PopPosition();
+                    return Compression.DecompressLzx(stream);
+                }
+                else
+                {
+                    throw new Exception("File is not compressed!");
+                }
+            }
+        }
+
+        private readonly byte COMPRESSED_HEADER = 0x11;
+
+        private bool IsCompressed(byte firstByte){
+            return firstByte == COMPRESSED_HEADER;
         }
     }
 }
