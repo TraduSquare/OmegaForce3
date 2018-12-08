@@ -28,7 +28,7 @@ namespace OmegaForce3.Format {
     public class GSM {
 
         //Dump the text from the file
-        private void dumptext(BinaryReader reader, int o) {
+        private void Dumptext(BinaryReader reader, int o) {
             for (int a = 0; a < Values.sizes[o]; a++) {
                 Values.rawbytes = reader.ReadUInt16(); //Read Two bytes
 
@@ -65,6 +65,7 @@ namespace OmegaForce3.Format {
                     }
                 }
             }
+            //Values.text.Add("[END]");
             Values.istext = false;
         }
 
@@ -89,7 +90,10 @@ namespace OmegaForce3.Format {
                         Values.istext = true;
                     }
                 }
-                if (Values.text[i] == "[New_Dialog_Box]") { //Is a new dialog box
+                if (Values.text[i] == "[New_Dialog_Box]" || Values.text[i] == "[IG_Unk_6]") { //Is a new dialog box
+                    //DIRTY BUT I NEED INVESTIGATE THIS
+                    if (Values.text[i] == "[IG_Unk_6]")
+                        Values.original.Add(Values.text[i]);
                     PoGenerate(po, e, o); //New Entry
                     e++;
                 }
@@ -156,7 +160,7 @@ namespace OmegaForce3.Format {
                     }
                     else {
                         reader.BaseStream.Position = Values.positions[o]; //Get the position
-                        dumptext(reader, o); //Dump the text
+                        Dumptext(reader, o); //Dump the text
                         ParseList(po, o); //Parse the text and export to po
 
                         /*for (i = 0; i < Values.text.Count(); i++)
