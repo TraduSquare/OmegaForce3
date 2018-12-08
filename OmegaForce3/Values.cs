@@ -18,9 +18,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OmegaForce3
 {
@@ -43,44 +40,67 @@ namespace OmegaForce3
         public static List<int> types = new List<int>(); //List positions
         public static string result = "";
 
+        //PO
+        public static List<string> var = new List<string>(); //Variables
+        public static string names = ""; //Names
+        public static List<string> original = new List<string>(); //Original Text
 
-        //TEXT VALUES - WIP
-        public static Int32 StartBlock;
-        public static Int16 TypeBlock;
-        public static Int16 Name;
-        public static UInt16 textxd;
-        public static byte[] text;
-        public static byte[] header;
-        public static List<string> textx = new List<string>();
-        public static List<Int32> headerx = new List<int>();
-        public static List<byte> textx2 = new List<byte>();
-        public static List<Int32> headerx2 = new List<int>();
-        public static string Name_string;
+        //TEXT
+        public static UInt16 rawbytes; //Bytes
+        public static List<string> text = new List<string>(); //Text
+        public static bool isname = false; //Is name
+        public static bool dialogenabled = false; //Dialog start
 
-        public static Dictionary<UInt16, string> reemplace = new Dictionary<UInt16, string>() {
+        public static Dictionary<UInt16, string> variables = new Dictionary<UInt16, string>() {
+            //Variables
+            {0x0001, "[END]"},
+            {0xEC00, "[Conversation]"},
+            {0x0000, "[BLANK]"},
+            {0xEC01, "[Dialog]"},
+            {0xE211, "[Unknown1]"},
+            {0x0002, "[Unknown2]"},
+            {0x0003, "[Unknown2]"},
+            {0xEC02, "[New_Dialog_Box]"},
+        };
+
+        public static Dictionary<UInt16, string> ingame = new Dictionary<UInt16, string>() {
+            //Text effect variables
+            {0xEC13, "[Efe1]"},
+            {0xE113, "[Efe2]"},
+            {0xE114, "[Efe3]"},
+            {0xE115, "[Efe4]"},
+            {0xE116, "[Efe5]"},
+            //Color names
+            {0xE242, "[Mobile_Terminal-color]"},
+            {0xE245, "[Virus-color]"},
+            {0xE240, "[Virus_Busting-color]"},
+            {0xE250, "[Hunter-VG-color]"},
+            {0xE255, "[Mega-color]"},
+            {0xE256, "[Prez-color]"},
+            {0xE257, "[Bud-color]"},
+            {0xE258, "[Zack-color]"},
+            //Sound Variables
+            {0xE206, "[Buzz_1]"},
+            {0xE210, "[Buzz_2]"},
+            {0x03B4, "[Buzz_3]"},
+            {0xEC16, "[Buzz_4]"},
+            //Another or unknown Variables
+            {0xE4A6, "[Hunter]"},
+            {0xE10A, "[IG_Unk_5]"},
+            {0x0284, "[IG_Unk_6]"},
+        };
+
+        public static Dictionary<UInt16, string> var_names = new Dictionary<UInt16, string>() {
+            //Names
+            {0x0000, "[NONAME]"},
             {0x001D, "[Jack]"},
             {0x001E, "[(Queen)Tia]"},
-            {0xEC13, "[Efect 1]"},
-            {0xE113, "[Efect 2]"},
-            {0xE114, "[Efect 3]"},
-            {0xE115, "[Efect 3]"},
-            {0xE116, "[Efect 3]"},
-            {0xEC02, "(Push)\n"},
-            {0x01EC, "[End dialog]\n"},
-            {0xEC00, "[Start conversation]"},
-            {0x0000, "[BLANK]"},
-            {0xEC01, "\n[Start dialog]\n"},
+            {0x0014, "[Geo]"},
+            {0x0065, "[Mega]"},
+            {0x0039, "[Mr_Shepar]"},
+            {0x0018, "[Bud]"},
+            {0x0019, "[Zack]"},
+            {0x0028, "[Mary.McLovin]"},
         };
-
-        /*public static Dictionary<UInt16, string> flagsingame = new Dictionary<UInt16, string>() {
-
-
-        };
-
-        public static Dictionary<UInt16, string> flags = new Dictionary<UInt16, string>() {
-            
-
-        };*/
-
     }
 }
