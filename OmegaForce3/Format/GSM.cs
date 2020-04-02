@@ -17,27 +17,115 @@
 //
 
 using System;
-using Yarhl.IO;
-using Yarhl.Media.Text;
-using Yarhl.FileFormat;
 using System.IO;
-using System.Text;
 using System.Linq;
+using System.Text;
+using Yarhl.FileFormat;
+using Yarhl.Media.Text;
 
-namespace OmegaForce3.Format
-{
-    public class GSM
-    {
-        public void Export(string file){
-        
+namespace OmegaForce3.Format {
 
+    public class GSM {
+
+        //Dump the text from the file
+        private void Dumptext(BinaryReader reader, int o) {
+            for (int a = 0; a < Values.sizes[o]; a++) {
+                Values.rawbytes = reader.ReadUInt16(); //Read Two bytes
+
+                if (Values.istext) { //Is a dialog box
+                    if (Values.ingame.TryGetValue(Values.rawbytes, out string result) || Values.variables.TryGetValue(Values.rawbytes, out result)) { //Is a ingame value or header value
+                        Values.text.Add(result);
+                        if (result == "[Dialog]") {
+                            Values.istext = false;
+                            Values.isname = true;
+                        }
+                    }
+                    else {
+                        byte[] array = BitConverter.GetBytes(Values.rawbytes);
+                        Values.result = Encoding.Unicode.GetString(array);
+                        Values.text.Add(Values.result.Replace("_", " "));
+                    }
+                }
+                else if (Values.isname) { //Chara name
+                    if (Values.var_names.TryGetValue(Values.rawbytes, out string result)) { //Get the name
+                        Values.text.Add(result);
+                    }
+                    Values.isname = false;
+                    Values.istext = true;
+                }
+                else { //Header values
+                    if (Values.variables.TryGetValue(Values.rawbytes, out string result)) { //Is a header value
+                        if (result == "[Dialog]") {
+                            Values.isname = true;
+                        }
+                        Values.text.Add(result);
+                    }
+                    else { //DEBUG
+                        Console.WriteLine("AVISO, LA LÍNEA " + a + " ESTÁ FALLANDO");
+                    }
+                }
+            }
+            //Values.text.Add("[END]");
+            Values.istext = false;
+        }
+
+        private void ParseList(Po po, int o) {
+            int e = 0;
+            for (int i = 0; i < Values.text.Count(); i++) {
+                if (Values.istext && Values.text[i] != "[New_Dialog_Box]") { //Ingame text
+                    if (Values.variables.ContainsValue(Values.text[i]) || Values.var_names.ContainsValue(Values.text[i])) { //Check is a ingame value or name
+                        Values.istext = false;
+                    }
+                    else { //Add the text
+                        Values.original.Add(Values.text[i]);
+                    }
+                }
+                else if (!Values.istext && Values.text[i] != "[New_Dialog_Box]") { //Values
+                    if (Values.variables.ContainsValue(Values.text[i]) || Values.var_names.ContainsValue(Values.text[i])) { //Header values or Names
+                        Values.var.Add(Values.text[i]);
+                    }
+
+                    if (Values.var_names.ContainsValue(Values.text[i])) { //Names
+                        Values.names = Values.text[i];
+                        Values.istext = true;
+                    }
+                }
+                if (Values.text[i] == "[New_Dialog_Box]" || Values.text[i] == "[IG_Unk_6]") { //Is a new dialog box
+                    //DIRTY BUT I NEED INVESTIGATE THIS
+                    if (Values.text[i] == "[IG_Unk_6]")
+                        Values.original.Add(Values.text[i]);
+                    PoGenerate(po, e, o); //New Entry
+                    e++;
+                }
+            }
+        }
+
+        private void PoGenerate(Po po, int e, int o) {
+            PoEntry entry = new PoEntry(); //New entry
+            string jointext = String.Join("", Values.original.ToArray()); //Join all text
+            Values.original.Clear(); //Clear the list
+
+            //SI OCURRE ESTO, ALGO ESTÁ FALLANDO EN EL CODIGO
+            if (string.IsNullOrEmpty(jointext))
+                jointext = "<!FAIL>";
+
+            entry.Original = jointext; //Original text
+            string joinvar = String.Join("/", Values.var.ToArray()); //Join all values
+            Values.var.Clear(); //Clear the list
+
+            entry.Reference = joinvar; //Values
+            entry.Context = o.ToString() + ":" + e.ToString(); //Block and line
+            entry.ExtractedComments = Values.names; //Name
+
+            po.Add(entry); //New entry
+        }
+
+        public void Export(string file) {
             System.Console.WriteLine("Exporting " + file + " to po");
 
             //Po header
-            Po po = new Po
-            {
-                Header = new PoHeader("Megaman Starforce 3", "glowtranslations@gmail.com", "es")
-                {
+            Po po = new Po {
+                Header = new PoHeader("Megaman Starforce 3", "glowtranslations@gmail.com", "es") {
                     LanguageTeam = "GlowTranslations & Transcene",
                 }
             };
@@ -45,63 +133,44 @@ namespace OmegaForce3.Format
             //Cleaning the lists
             Values.positions.Clear();
             Values.sizes.Clear();
-            int i = 0;
-            int o = 0;
 
-            using (BinaryReader reader = new BinaryReader(File.Open(file, FileMode.Open)))
-            {
+            using (BinaryReader reader = new BinaryReader(File.Open(file, FileMode.Open))) {
                 Values.magic = reader.ReadInt32(); //Read magic
                 Values.Unknown1 = reader.ReadInt16(); //Read a Unknown value
                 Values.blockcounter = reader.ReadInt16(); //Read the number of blocks on the file
                 Values.blockmaxsize = reader.ReadInt16(); //Read the biggest block on the file
                 reader.BaseStream.Position = reader.BaseStream.Position + 0x02; //Skip
 
-                for (i = 0; i < Values.blockcounter; i++) {
+                for (int i = 0; i < Values.blockcounter; i++) {
                     Values.positionblock = reader.ReadInt16(); //Read the position
                     Values.positions.Add(Values.positionblock); //Add the position on a list
                     Values.sizeblock = reader.ReadInt16(); //Read the size
                     Values.sizes.Add(Values.sizeblock); //Add the size on a list
                 }
-                //int a = 0;
-                for (o = 0; o < Values.positions.Count; o++) {
-                    reader.BaseStream.Position = Values.positions[o]; //Get the position
-                    byte[] array = reader.ReadBytes(Values.sizes[o] * 2); //Get the size
-                    //SHITTY CODE, DOESN'T WORK
-                    /*for (i = 0; i < array.Length; i++)
-                    {
-                        if (Values.istext) {
-                            if (array[i] == 0x02 && array[i + 1] == 0xEC)
-                            {
-                                Values.istext = false;
-                                Values.textx2.RemoveAt(0);
-                                //Values.textx2.RemoveAt(1);
-                                byte[] arrayX = Values.textx2.ToArray();
-                                //Array.Reverse(arrayX);
-                                Values.result = Encoding.BigEndianUnicode.GetString(arrayX);
-                                Values.textx.Add(Values.result);
-                                Values.textx2.Clear();
-                            }
-                            else
-                            {
-                                Values.textx2.Add(array[i]);
-                            }
-                        }
-                        else {
-                            if (array[i] == 0x01 && array[i + 1] == 0xEC) {
-                                Values.istext = true;
-                                //int e = BitConverter.ToInt32(Values.header, 0);
-                                //Values.headerx.AddRange(e);
-                            }
-                            else {
-                                Values.header = new byte[] { array[i] };
-                            }
-                        }
+
+                for (int o = 0; o < Values.positions.Count; o++) { //Check the all file
+                    Values.text.Clear();
+                    if (Values.sizes[o] == 0) { //White block
+                        PoEntry entry = new PoEntry();
+                        entry.Original = "[NULL]";
+                        entry.Reference = "[NULL]";
+                        entry.Context = o.ToString() + ":" + "NULL_DIALOG_BOX";
+                        entry.ExtractedComments = "[NULL]";
+                        po.Add(entry);
                     }
-                    //byte[] array2 = new byte[Values.text.GetLength(0)];
-                    for (i = 0; i < Values.textx.Count(); i++) {
-                        Console.WriteLine(Values.textx[i]);
+                    else {
+                        reader.BaseStream.Position = Values.positions[o]; //Get the position
+                        Dumptext(reader, o); //Dump the text
+                        ParseList(po, o); //Parse the text and export to po
+
+                        /*for (i = 0; i < Values.text.Count(); i++)
+                        {
+                            Console.Write(Values.text[i]);
                         }*/
+                    }
                 }
+                //Write po
+                po.ConvertTo<BinaryFormat>().Stream.WriteTo(file + ".po");
             }
         }
     }
