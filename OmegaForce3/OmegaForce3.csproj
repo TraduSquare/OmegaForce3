@@ -8,10 +8,11 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>OmegaForce3</RootNamespace>
     <AssemblyName>OmegaForce3</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>anycpu</PlatformTarget>
@@ -33,10 +34,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Mono.Addins">
-      <HintPath>lib\Mono.Addins.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Composition.AttributedModel, Version=1.0.33.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Composition.AttributedModel.1.2.0\lib\netstandard2.0\System.Composition.AttributedModel.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.Convention, Version=1.0.33.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Composition.Convention.1.2.0\lib\netstandard2.0\System.Composition.Convention.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.Hosting, Version=1.0.33.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Composition.Hosting.1.2.0\lib\netstandard2.0\System.Composition.Hosting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.Runtime, Version=1.0.33.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Composition.Runtime.1.2.0\lib\netstandard2.0\System.Composition.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.TypedParts, Version=1.0.33.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Composition.TypedParts.1.2.0\lib\netstandard2.0\System.Composition.TypedParts.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -44,13 +57,13 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="Yarhl">
-      <HintPath>lib\Yarhl.dll</HintPath>
-    </Reference>
-    <Reference Include="Yarhl.Media">
-      <HintPath>lib\Yarhl.Media.dll</HintPath>
-    </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="Yarhl, Version=2.0.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Yarhl.2.0.0.1\lib\netstandard2.0\Yarhl.dll</HintPath>
+    </Reference>
+    <Reference Include="Yarhl.Media, Version=2.0.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Yarhl.Media.2.0.0.1\lib\netstandard2.0\Yarhl.Media.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Encryption.cs" />
@@ -81,9 +94,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Format\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
