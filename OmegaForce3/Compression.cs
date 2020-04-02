@@ -17,12 +17,48 @@
 //
 
 using System;
+using System.Diagnostics;
+using System.IO;
+using Yarhl.FileFormat;
+using Yarhl.FileSystem;
+using Yarhl.IO;
+
 namespace OmegaForce3
 {
-    public class Compression
+    public static class Compression
     {
-        public Compression()
+        private static readonly String COMP_PATH_WIN = @"\lib\NDS_Comp_CUE\";
+        private static readonly String COMP_PATH_UNIX = "/lib/NDS_Comp_CUE/";
+        public static DataStream DecompressLzx(DataStream file)
         {
+            string tempFile = Path.GetTempFileName();
+            file.WriteTo(tempFile);
+
+            string program = System.IO.Path.GetFullPath(@"../../") + COMP_PATH_WIN + "lzx.exe";
+
+            string arguments = "-d " + tempFile;
+
+            if (Environment.OSVersion.Platform != PlatformID.Win32NT)
+            {
+                program = System.IO.Path.GetFullPath(@"../../") + COMP_PATH_UNIX + "lzx";
+            }
+
+            Process process = new Process();
+            process.StartInfo.FileName = program;
+            process.StartInfo.Arguments = arguments;
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.CreateNoWindow = true;
+            process.StartInfo.ErrorDialog = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.Start();
+
+            process.WaitForExit();
+
+            DataStream streamNew = new DataStream(tempFile, FileOpenMode.Read);
+
+            File.Delete(tempFile);
+
+            return streamNew;
         }
     }
 }

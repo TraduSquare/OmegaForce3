@@ -50,6 +50,7 @@
     <Reference Include="Yarhl.Media">
       <HintPath>lib\Yarhl.Media.dll</HintPath>
     </Reference>
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Encryption.cs" />
@@ -60,6 +61,23 @@
     <Compile Include="Format\GSM.cs" />
     <Compile Include="Format\Graphic.cs" />
     <Compile Include="Compression.cs" />
+    <Compile Include="Media\Image\ColorExtension.cs" />
+    <Compile Include="Media\Image\ColorFormat.cs" />
+    <Compile Include="Media\Image\ImageConverter.cs" />
+    <Compile Include="Media\Image\Map.cs" />
+    <Compile Include="Media\Image\MapInfo.cs" />
+    <Compile Include="Media\Image\Mapable.cs" />
+    <Compile Include="Media\Image\Palette.cs" />
+    <Compile Include="Media\Image\Pixel.cs" />
+    <Compile Include="Media\Image\PixelArray.cs" />
+    <Compile Include="Media\Image\PixelEncoding.cs" />
+    <Compile Include="Media\Image\Processing\BasicQuantization.cs" />
+    <Compile Include="Media\Image\Processing\ColorQuantization.cs" />
+    <Compile Include="Media\Image\Processing\ExhaustiveSearch.cs" />
+    <Compile Include="Media\Image\Processing\FixedPaletteQuantization.cs" />
+    <Compile Include="Media\Image\Processing\NearestNeighbour.cs" />
+    <Compile Include="Media\Image\BgMode.cs" />
+    <Compile Include="Media\Image\CompressMapping.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

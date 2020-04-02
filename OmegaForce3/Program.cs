@@ -49,6 +49,9 @@ namespace OmegaForce3
                 case "-exportgraphics":
                     //extract2.(args[1]);
                     break;
+                case "-decompress":
+                    export.Decompress(args[1]).WriteTo(args[1] + ".decompressed");
+                    break;
             }
         }
     }
