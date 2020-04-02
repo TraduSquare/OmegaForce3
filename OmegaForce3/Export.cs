@@ -22,11 +22,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OmegaForce3.Text;
+using Yarhl.FileFormat;
+using Yarhl.FileSystem;
 using Yarhl.IO;
+using Yarhl.Media.Text;
 
 namespace OmegaForce3 {
     class Export {
         public void Extract(string file) {
+            var name = Path.GetFileNameWithoutExtension(file);
+            if (!Directory.Exists(file)) Directory.CreateDirectory(name);
+
             OmegaForce3.Encryption encryption = new OmegaForce3.Encryption();
             OmegaForce3.Format.GSM extracting = new OmegaForce3.Format.GSM();
             int i = 0;
@@ -59,7 +66,7 @@ namespace OmegaForce3 {
                         else { //Graphic??
                             Values.istext = false;
                         }
-                        encryption.Decrypt(file + "." + i.ToString(), array, Values.istext); //Decrypt the file
+                        encryption.Decrypt(name + "/" + file + "." + i.ToString(), array, Values.istext); //Decrypt the file
                     }
                     else if (Values.types[i] == 0x8000) { //Compressed
                         Extract(file + "." + i.ToString(), array); //Test, only for extract
@@ -70,20 +77,37 @@ namespace OmegaForce3 {
                 }
             }
             //Extract the text - WIP, DOESN'T WORK
-            /*for(i = 0; i < Values.positions.Count - 1; i++ ) {
-                extracting.Export(file + "." + i.ToString()); //Extract the text
+            for (i = 0; i < Values.positions.Count - 1; i++ ) {
+                GeneratePo(name + "/" + file + "." + i.ToString() + ".exported", name + "/"); //Extract the text
 
-            }*/
+            }
         }
         //Temporal - only for extract files
-        public void Extract(string file, byte[] array) {
+        public void Extract(string file, byte[] array)
+        {
+            var name = Path.GetFileNameWithoutExtension(file);
+            if (!Directory.Exists(file)) Directory.CreateDirectory(name);
 
-            using (BinaryWriter writer = new BinaryWriter(File.Open(file + ".exportedtest", FileMode.Create))) { //Make a decrypted file
+
+            using (BinaryWriter writer = new BinaryWriter(File.Open(name + "/" + file + ".exportedtest", FileMode.Create))) { //Make a decrypted file
                 for (int i = 0; i < array.Length; i++) //Make a bucle to write the header
                 {
                     writer.Write((byte)(array[i])); //Write the no encrypted data
                 }
             }
+        }
+
+        public void GeneratePo(string file, string folder)
+        {
+            var name = Path.GetFileNameWithoutExtension(file);
+            var nod = NodeFactory.FromFile(file); //BinaryFormat
+            Node nodPo;
+            IConverter<BinaryFormat, Gsm> gsmConv = new Binary2Gsm();
+            var nodoScript = nod.Transform(gsmConv);
+
+            IConverter<Gsm, Po> poConv = new Gsm2Po();
+            nodPo = nodoScript.Transform(poConv);
+            nodPo?.Transform<Po2Binary, Po, BinaryFormat>().Stream.WriteTo(folder + name + ".po");
         }
 
         public DataStream Decompress(string file)

@@ -18,9 +18,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OmegaForce3.Text;
+using Yarhl.FileFormat;
+using Yarhl.FileSystem;
+using Yarhl.Media.Text;
 
 namespace OmegaForce3
 {
@@ -44,7 +49,8 @@ namespace OmegaForce3
                     export.Extract(args[1]);
                     break;
                 case "-exporttext":
-                    extract1.Export(args[1]);
+                    //extract1.Export(args[1]);
+                    
                     break;
                 case "-exportgraphics":
                     //extract2.(args[1]);

@@ -70,6 +70,9 @@
     <Compile Include="Export.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Text\Binary2Gsm.cs" />
+    <Compile Include="Text\Gsm.cs" />
+    <Compile Include="Text\Gsm2Po.cs" />
     <Compile Include="Values.cs" />
     <Compile Include="Format\GSM.cs" />
     <Compile Include="Format\Graphic.cs" />
