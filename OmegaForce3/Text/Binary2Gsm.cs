@@ -10,7 +10,7 @@ using Yarhl.Media.Text;
 
 namespace OmegaForce3.Text
 {
-    class Binary2Gsm : IConverter<BinaryFormat, Gsm>
+    public class Binary2Gsm : IConverter<BinaryFormat, Gsm>
     {
         private DataReader Reader { get; set; }
         private Gsm Gsm { get; set; }
@@ -80,20 +80,20 @@ namespace OmegaForce3.Text
 
             if (Gsm.DictionaryStrings.TryGetValue(val, out string result))
                 return result;
-            return "{" + System.Convert.ToString(val, 8) + "}";
+            return "{" + System.Convert.ToString(val, 16) + "}";
         }
 
         private string GetCharaName()
         {
-            string line = "\n[DIALOG_START]\n";
+            string line = "\n[DIALOG_START]";
             eCount++;
             ushort val = Reader.ReadUInt16();
             if (Gsm.DictionaryNames.TryGetValue(val, out string result))
                 line += result;
             else
-                line+= "{" + System.Convert.ToString(val, 8) + "}";
+                line+= "{" + System.Convert.ToString(val, 16) + "}";
 
-            return line;
+            return line + "\n";
         }
     }
 }

@@ -101,18 +101,16 @@ namespace OmegaForce3 {
         {
             var name = Path.GetFileNameWithoutExtension(file);
             var nod = NodeFactory.FromFile(file); //BinaryFormat
-            Node nodPo;
-            IConverter<BinaryFormat, Gsm> gsmConv = new Binary2Gsm();
-            var nodoScript = nod.Transform(gsmConv);
 
-            IConverter<Gsm, Po> poConv = new Gsm2Po();
-            nodPo = nodoScript.Transform(poConv);
-            nodPo?.Transform<Po2Binary, Po, BinaryFormat>().Stream.WriteTo(folder + name + ".po");
+            var nodoScript = nod.TransformWith<Binary2Gsm>();
+            var nodPo = nodoScript.TransformWith<Gsm2Po>();
+
+            nodPo.TransformWith<Po2Binary>().Stream.WriteTo(folder + name + ".po");
         }
 
         public DataStream Decompress(string file)
         {
-            using(DataStream stream = new DataStream(file, FileOpenMode.Read)){
+            using(var stream = DataStreamFactory.FromFile(file, FileOpenMode.Read)){
 
                 DataReader reader = new DataReader(stream);
 

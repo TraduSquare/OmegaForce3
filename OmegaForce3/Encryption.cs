@@ -29,6 +29,7 @@ namespace OmegaForce3
     {
         public void Decrypt(string file, byte[] array, bool istext)
         {
+
             Values.headersize = 0xC + (array[6] * 0x4); //The header size
             //Make a stream from the file
             using (BinaryWriter writer = new BinaryWriter(File.Open(file + ".exported", FileMode.Create))) //Make a decrypted file

@@ -54,7 +54,7 @@ namespace OmegaForce3
 
             process.WaitForExit();
 
-            DataStream streamNew = new DataStream(tempFile, FileOpenMode.Read);
+            DataStream streamNew = DataStreamFactory.FromFile(tempFile, FileOpenMode.Read);
 
             File.Delete(tempFile);
 

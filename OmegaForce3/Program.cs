@@ -18,14 +18,20 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OmegaForce3.Graphics.Tile;
+using OmegaForce3.Graphics.TileType;
 using OmegaForce3.Text;
+using Texim;
 using Yarhl.FileFormat;
 using Yarhl.FileSystem;
+using Yarhl.IO;
 using Yarhl.Media.Text;
+using TileFormat = OmegaForce3.Graphics.TileType.TileFormat;
 
 namespace OmegaForce3
 {
@@ -52,8 +58,36 @@ namespace OmegaForce3
                     //extract1.Export(args[1]);
                     
                     break;
+                case "-importtext":
+                    var nodo = NodeFactory.FromFile(args[1]);
+                    nodo.TransformWith<Binary2Po>();
+
+                    Node nodoRtp = nodo.TransformWith<Po2Gsm>();
+
+                    // 3
+                    Node nodoBinary = nodoRtp.TransformWith<Gsm2Binary>();
+
+                    //4
+                    nodoBinary.Stream.WriteTo(args[1] + "_new.bin");
+                    break;
                 case "-exportgraphics":
-                    //extract2.(args[1]);
+                    /*var nodoPal = NodeFactory.FromFile("0001.dat");
+                    var nodoTile = NodeFactory.FromFile("0002.dat");
+                    var nodoMap = NodeFactory.FromFile("0003.dat");
+
+                    Map map = nodoMap.TransformWith<Binary2Map>().GetFormatAs<Map>();
+
+                    Palette pal = nodoPal.TransformWith<Binary2Palette>().GetFormatAs<Palette>();
+
+                    var tile = nodoTile.TransformWith<Binary2TileFormat>().GetFormatAs<TileFormat>();
+
+                    map.CreateBitmap(tile.Pixels, pal).Save("hola2.png");
+                    */
+                    //string path = Path.Combine(outputPath, nDIG.Name + ".png");
+                    ImagenPuto hola = new ImagenPuto("0001.dat", "0002.dat", "0003.dat");
+                    hola.GenerateImage();
+                    //Convert2Image hola = new Convert2Image("0001.dat", "0002.dat", "0003.dat");
+                    //hola.GenerateFinalImage();
                     break;
                 case "-decompress":
                     export.Decompress(args[1]).WriteTo(args[1] + ".decompressed");

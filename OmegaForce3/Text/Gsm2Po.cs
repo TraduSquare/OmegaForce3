@@ -8,7 +8,7 @@ using Yarhl.Media.Text;
 
 namespace OmegaForce3.Text
 {
-    class Gsm2Po : IConverter<Gsm, Po>
+    public class Gsm2Po : IConverter<Gsm, Po>
     {
         private Po Po;
         public Gsm2Po()

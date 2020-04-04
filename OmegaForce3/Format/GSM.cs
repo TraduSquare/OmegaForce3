@@ -170,7 +170,7 @@ namespace OmegaForce3.Format {
                     }
                 }
                 //Write po
-                po.ConvertTo<BinaryFormat>().Stream.WriteTo(file + ".po");
+                //po.ConvertTo<BinaryFormat>().Stream.WriteTo(file + ".po");
             }
         }
     }
