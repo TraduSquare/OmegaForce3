@@ -40,7 +40,7 @@ namespace OmegaForce3.Text
             var i = 0;
             foreach (var block in Gsm.Blocks)
             {
-                Gsm.Positions[i] = (short)Writer.Stream.Position;
+                Gsm.Positions[i] = (ushort)Writer.Stream.Position;
                 if (block != null)
                 {
                     Writer.Write(block);

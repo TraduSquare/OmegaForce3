@@ -23,7 +23,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OmegaForce3.Graphics.Tile;
+using OmegaForce3.Format.Bin;
 using OmegaForce3.Graphics.TileType;
 using OmegaForce3.Text;
 using Texim;
@@ -39,9 +39,6 @@ namespace OmegaForce3
     {
         static void Main(string[] args)
         {
-            OmegaForce3.Export export = new OmegaForce3.Export();
-            OmegaForce3.Format.GSM extract1 = new OmegaForce3.Format.GSM();
-            OmegaForce3.Format.Graphic extract2 = new OmegaForce3.Format.Graphic();
             Console.WriteLine("OmegaForce3 — A MegaMan StarForce 3 toolkit for fantranslations by Darkmet98.\nThanks to Pleonex for Yarhl libraries and decryption.\nVersion: 1.0");
             if (args.Length != 1 && args.Length != 2 && args.Length != 3)
             {
@@ -51,12 +48,31 @@ namespace OmegaForce3
             }
             switch (args[0])
             {
-                case "-decrypt":
-                    export.Extract(args[1]);
+                case "-unpack":
+                    //export.Extract(args[1]);
+                    // 1
+                    var nod = NodeFactory.FromFile(args[1]); // BinaryFormat
+
+                    // 2
+                    Node nodBin = nod.TransformWith<Binary2Bin>();
+
+                    // 3
+                    Node nodoContainer = nodBin.TransformWith<Bin2Container>();
+
+                    //4
+                    var PathFolder = Path.GetFileNameWithoutExtension(args[1]);
+                    if (!Directory.Exists(PathFolder)) Directory.CreateDirectory(PathFolder);
+
+                    foreach (var child in Navigator.IterateNodes(nodoContainer))
+                    {
+                        if (child.Stream == null)
+                            continue;
+                        string output = Path.Combine(PathFolder + "/" + child.Name);
+                        child.Stream.WriteTo(output);
+                    }
                     break;
                 case "-exporttext":
-                    //extract1.Export(args[1]);
-                    
+
                     break;
                 case "-importtext":
                     var nodo = NodeFactory.FromFile(args[1]);
@@ -88,9 +104,6 @@ namespace OmegaForce3
                     hola.GenerateImage();
                     //Convert2Image hola = new Convert2Image("0001.dat", "0002.dat", "0003.dat");
                     //hola.GenerateFinalImage();
-                    break;
-                case "-decompress":
-                    export.Decompress(args[1]).WriteTo(args[1] + ".decompressed");
                     break;
             }
         }

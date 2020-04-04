@@ -16,7 +16,7 @@ namespace OmegaForce3.Text
         public short BlockMaxSize { get; set; } //I think this is incorrect
 
         //Arrays
-        public short[] Positions { get; set; }
+        public ushort[] Positions { get; set; }
         public short[] Sizes { get; set; }
         public string[] Lines { get; set; }
         public byte[][] Blocks { get; set; }
@@ -27,7 +27,7 @@ namespace OmegaForce3.Text
 
         public void InitializeArrays()
         {
-            Positions = new short[BlockCount];
+            Positions = new ushort[BlockCount];
             Sizes = new short[BlockCount];
             Lines = new string[BlockCount];
             Blocks = new byte[BlockCount][];

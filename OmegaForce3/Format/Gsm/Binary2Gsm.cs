@@ -36,7 +36,7 @@ namespace OmegaForce3.Text
         private void DumpData()
         {
             Gsm.Magic = Reader.ReadString(4);
-            //if(Gsm.Magic != " GSM") throw new FormatException("This is not a Text file");
+            if(Gsm.Magic != " GSM") throw new FormatException("This is not a Text file");
             Gsm.Id = Reader.ReadInt16();
             Gsm.BlockCount = Reader.ReadInt16();
             Gsm.BlockMaxSize = Reader.ReadInt16();
@@ -46,7 +46,7 @@ namespace OmegaForce3.Text
 
             for (var i = 0; i < Gsm.BlockCount; i++)
             {
-                Gsm.Positions[i] = Reader.ReadInt16();
+                Gsm.Positions[i] = Reader.ReadUInt16();
                 Gsm.Sizes[i] = Reader.ReadInt16();
             }
         }
