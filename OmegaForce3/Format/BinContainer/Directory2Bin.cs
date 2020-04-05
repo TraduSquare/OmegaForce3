@@ -82,7 +82,7 @@ namespace OmegaForce3.Format.BinContainer
 
         private byte[] CompressFile(byte[] file)
         {
-            return Bin.CompressLzxText(file);
+            return Bin.Lzx(file, "-evb ");
         }
 
         private Node GenerateNode(byte[] bytes, string name)

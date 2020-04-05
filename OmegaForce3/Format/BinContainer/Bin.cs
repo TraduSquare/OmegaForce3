@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OmegaForce3.Properties;
 using Yarhl.FileFormat;
 using Yarhl.IO;
 
@@ -32,22 +33,23 @@ namespace OmegaForce3.Format.Bin
             Magics = new List<uint>();
         }
 
-        //Compression
-        private static readonly String COMP_PATH_WIN = @"\lib\NDS_Comp_CUE\";
-        private static readonly String COMP_PATH_UNIX = "/lib/NDS_Comp_CUE/";
-        public byte[] DecompressLzx(byte[] file)
+        //Compression - Thanks CUE
+        public byte[] Lzx(byte[] file, string argument)
         {
             var tempFile = Path.GetTempFileName();
+            var program = Path.GetTempFileName() + ".exe";
             File.WriteAllBytes(tempFile, file);
+            File.WriteAllBytes(program, Resources.lzx);
 
-            var program = Path.GetFullPath(@"../../") + COMP_PATH_WIN + "lzx.exe";
+            // "-d " Export
+            // "-evb " Import
 
-            var arguments = "-d " + tempFile;
+            var arguments = argument + tempFile;
 
-            if (Environment.OSVersion.Platform != PlatformID.Win32NT)
+            /*if (Environment.OSVersion.Platform != PlatformID.Win32NT)
             {
                 program = Path.GetFullPath(@"../../") + COMP_PATH_UNIX + "lzx";
-            }
+            }*/
 
             var process = new Process
             {
@@ -68,43 +70,7 @@ namespace OmegaForce3.Format.Bin
             var streamNew = File.ReadAllBytes(tempFile);
 
             File.Delete(tempFile);
-
-            return streamNew;
-        }
-
-        public byte[] CompressLzxText(byte[] file)
-        {
-            var tempFile = Path.GetTempFileName();
-            File.WriteAllBytes(tempFile, file);
-
-            var program = Path.GetFullPath(@"../../") + COMP_PATH_WIN + "lzx.exe";
-
-            var arguments = "-evb " + tempFile;
-
-            if (Environment.OSVersion.Platform != PlatformID.Win32NT)
-            {
-                program = Path.GetFullPath(@"../../") + COMP_PATH_UNIX + "lzx";
-            }
-
-            var process = new Process
-            {
-                StartInfo =
-                {
-                    FileName = program,
-                    Arguments = arguments,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    ErrorDialog = false,
-                    RedirectStandardOutput = true
-                }
-            };
-            process.Start();
-
-            process.WaitForExit();
-
-            var streamNew = File.ReadAllBytes(tempFile);
-
-            File.Delete(tempFile);
+            File.Delete(program);
 
             return streamNew;
         }

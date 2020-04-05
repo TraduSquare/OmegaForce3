@@ -34,11 +34,15 @@ namespace OmegaForce3
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("OmegaForce3 — A MegaMan StarForce 3 toolkit for fantranslations by Darkmet98.\nThanks to Pleonex for Yarhl libraries and decryption.\nVersion: 1.0");
+            Console.WriteLine("OmegaForce3 — A MegaMan StarForce 3 toolkit for fantranslations by Darkmet98." +
+                              "\nThanks to Pleonex for Yarhl libraries and decryption." +
+                              "\nThanks to CUE for Lzx compression." +
+                              "\nVersion: 1.0");
             if (args.Length != 1 && args.Length != 2 && args.Length != 3)
             {
-                Console.WriteLine("\nUsage: OmegaForce3.exe <-decrypt/-encrypt");
-                Console.WriteLine("Decrypt files: OmegaForce3.exe -decrypt \"file \"");
+                Console.WriteLine("\nUsage: OmegaForce3.exe <-unpack/-pack> <file/folder>");
+                Console.WriteLine("Unpack files: OmegaForce3.exe -unpack \"mess_game.bin \"");
+                Console.WriteLine("Pack files: OmegaForce3.exe -pack \"mess_game \"");
                 return;
             }
             switch (args[0])

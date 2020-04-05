@@ -52,7 +52,7 @@ namespace OmegaForce3.Format.Bin
                 if (Bin.Types[i] == 32768)
                 {
                     File.WriteAllBytes(i+".comp",block);
-                    block = Bin.DecompressLzx(block);
+                    block = Bin.Lzx(block, "-d ");
                 }
                 Bin.Magics.Add(ReadMagic(block));
                 Bin.Blocks.Add(block);
