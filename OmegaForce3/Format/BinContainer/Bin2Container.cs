@@ -14,15 +14,19 @@ namespace OmegaForce3.Format.Bin
 {
     public class Bin2Container : IConverter<Bin, NodeContainerFormat>
     {
+        private string NameList { get; set; }
+        private Bin Bin { get; set; }
         public NodeContainerFormat Convert(Bin source)
         {
+            Bin = source;
             NodeContainerFormat container = new NodeContainerFormat();
-
+            NameList = "";
             for (int i = 0; i < source.Count; i++)
             {
                 container.Root.Add(CheckFile(source.Blocks[i], source.Magics[i], i));
             }
 
+            container.Root.Add(GenerateNameList());
             return container;
 
         }
@@ -37,15 +41,29 @@ namespace OmegaForce3.Format.Bin
 
         private Node ConvertGsm(byte[] file, int i)
         {
-            return NodeFactory.FromSubstream(i.ToString().PadLeft(2, '0') + ".po",DataStreamFactory
+            var name = GenerateName(i) + ".po";
+            NameList += name + "|" + Bin.Types[i] + "\n";
+
+            return NodeFactory.FromSubstream(name,DataStreamFactory
                     .FromArray(file,0,file.Length),0,file.Length)
                 .TransformWith<Binary2Gsm>().TransformWith<Gsm2Po>().TransformWith<Po2Binary>();
         }
 
         private Node ConvertGeneric(byte[] file, int i)
         {
-            Node child = NodeFactory.FromMemory(i.ToString().PadLeft(2, '0') + ".bin");
+            var name = GenerateName(i) + ".bin";
+            NameList += name + "|" + Bin.Types[i] + "\n";
+
+            Node child = NodeFactory.FromMemory(name);
             child.Stream.Write(file, 0, file.Length);
+            return child;
+        }
+
+        private Node GenerateNameList()
+        {
+            var listArr = Encoding.UTF8.GetBytes(NameList);
+            Node child = NodeFactory.FromMemory("Header.ome");
+            child.Stream.Write(listArr, 0, listArr.Length);
             return child;
         }
 
@@ -63,6 +81,11 @@ namespace OmegaForce3.Format.Bin
             }
 
             return result;
+        }
+
+        private string GenerateName(int i)
+        {
+            return i.ToString().PadLeft(2, '0');
         }
     }
 }

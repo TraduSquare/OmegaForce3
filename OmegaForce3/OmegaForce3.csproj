@@ -75,7 +75,7 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Drawing" />
-    <Reference Include="Texim, Version=1.1.0.27336, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Texim, Version=1.1.0.3559, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\Texim.dll</HintPath>
     </Reference>
@@ -94,7 +94,7 @@
     <Compile Include="Format\BinContainer\Bin2Binary.cs" />
     <Compile Include="Format\BinContainer\Bin2Container.cs" />
     <Compile Include="Format\BinContainer\Binary2Bin.cs" />
-    <Compile Include="Format\BinContainer\Container2Bin.cs" />
+    <Compile Include="Format\BinContainer\Directory2Bin.cs" />
     <Compile Include="Graphics\TileType\Binary2Map.cs" />
     <Compile Include="Graphics\TileType\Binary2Palette.cs" />
     <Compile Include="Graphics\TileType\Binary2TileFormat.cs" />

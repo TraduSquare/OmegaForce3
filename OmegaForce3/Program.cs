@@ -18,11 +18,14 @@
 
 using System;
 using System.IO;
+using System.Reflection;
 using OmegaForce3.Format.Bin;
 using OmegaForce3.Format.BinContainer;
 using OmegaForce3.Graphics.TileType;
 using OmegaForce3.Text;
+using Yarhl.FileFormat;
 using Yarhl.FileSystem;
+using Yarhl.IO;
 using Yarhl.Media.Text;
 
 namespace OmegaForce3
@@ -41,7 +44,6 @@ namespace OmegaForce3
             switch (args[0])
             {
                 case "-unpack":
-                    //export.Extract(args[1]);
                     // 1
                     var nod = NodeFactory.FromFile(args[1]); // BinaryFormat
 
@@ -65,16 +67,10 @@ namespace OmegaForce3
                     break;
 
                 case "-pack":
-                    Node nodeFolder = NodeFactory.FromDirectory(args[1], "*.*");
-
-                    // 2
-                    Node nodoTbl = nodeFolder.TransformWith<Container2Bin>();
-
-                    // 3
-                    Node nodoBin = nodoTbl.TransformWith<Bin2Binary>();
-
-                    //4
-                    nodoBin.Stream.WriteTo(args[1] + "_new.bin");
+                    var generate = new Directory2Bin(args[1]);
+                    var bin = generate.GenerateBin();
+                    Node nodeBin = NodeFactory.FromMemory("test");
+                    nodeBin.TransformWith(generate).TransformWith<Bin2Binary>().Stream.WriteTo(args[1] + "_new.bin");
                     break;
                 case "-importtext":
                     var nodo = NodeFactory.FromFile(args[1]);
