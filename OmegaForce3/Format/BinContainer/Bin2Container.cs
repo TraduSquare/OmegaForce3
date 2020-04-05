@@ -49,7 +49,7 @@ namespace OmegaForce3.Format.Bin
             return child;
         }
 
-        private byte[] Decrypt(byte[] array, bool istext)
+        public static byte[] Decrypt(byte[] array, bool istext)
         {
             var key = 0x55; //Xor Key — Thanks Pleonex
             

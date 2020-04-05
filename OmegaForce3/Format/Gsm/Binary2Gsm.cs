@@ -89,11 +89,11 @@ namespace OmegaForce3.Text
             eCount++;
             ushort val = Reader.ReadUInt16();
             if (Gsm.DictionaryNames.TryGetValue(val, out string result))
-                line += result;
+                line += result + "\n";
             else
                 line+= "{" + System.Convert.ToString(val, 16) + "}";
 
-            return line + "\n";
+            return line;
         }
     }
 }

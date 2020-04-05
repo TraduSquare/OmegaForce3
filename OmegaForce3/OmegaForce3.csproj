@@ -91,8 +91,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Format\BinContainer\Bin.cs" />
+    <Compile Include="Format\BinContainer\Bin2Binary.cs" />
     <Compile Include="Format\BinContainer\Bin2Container.cs" />
     <Compile Include="Format\BinContainer\Binary2Bin.cs" />
+    <Compile Include="Format\BinContainer\Container2Bin.cs" />
     <Compile Include="Graphics\TileType\Binary2Map.cs" />
     <Compile Include="Graphics\TileType\Binary2Palette.cs" />
     <Compile Include="Graphics\TileType\Binary2TileFormat.cs" />

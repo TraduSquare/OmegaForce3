@@ -20,7 +20,7 @@ namespace OmegaForce3.Format.Bin
         public int Count { get; set; }
         /*
          * 00 = Normales
-         * 32768 = Comprimido con Lzx (gráfico)
+         * 32768 = Comprimido con Lzx
          */
 
         public Bin()
@@ -43,6 +43,43 @@ namespace OmegaForce3.Format.Bin
             var program = Path.GetFullPath(@"../../") + COMP_PATH_WIN + "lzx.exe";
 
             var arguments = "-d " + tempFile;
+
+            if (Environment.OSVersion.Platform != PlatformID.Win32NT)
+            {
+                program = Path.GetFullPath(@"../../") + COMP_PATH_UNIX + "lzx";
+            }
+
+            var process = new Process
+            {
+                StartInfo =
+                {
+                    FileName = program,
+                    Arguments = arguments,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    ErrorDialog = false,
+                    RedirectStandardOutput = true
+                }
+            };
+            process.Start();
+
+            process.WaitForExit();
+
+            var streamNew = File.ReadAllBytes(tempFile);
+
+            File.Delete(tempFile);
+
+            return streamNew;
+        }
+
+        public byte[] CompressLzxText(byte[] file)
+        {
+            var tempFile = Path.GetTempFileName();
+            File.WriteAllBytes(tempFile, file);
+
+            var program = Path.GetFullPath(@"../../") + COMP_PATH_WIN + "lzx.exe";
+
+            var arguments = "-evb " + tempFile;
 
             if (Environment.OSVersion.Platform != PlatformID.Win32NT)
             {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Yarhl.FileFormat;
 using Yarhl.IO;
 
@@ -48,7 +49,11 @@ namespace OmegaForce3.Format.Bin
                 Reader.Stream.Position = Bin.Positions[i];
                 var block = Reader.ReadBytes((Bin.Types[i] != 32768)?Bin.Sizes[i]: //Not compressed
                     (i != Bin.Count-1)?(int)(Bin.Positions[i+1]-Bin.Positions[i]):(int)(Reader.Stream.Length - Bin.Positions[i])); //Compressed
-                if (Bin.Types[i] == 32768) block = Bin.DecompressLzx(block);
+                if (Bin.Types[i] == 32768)
+                {
+                    File.WriteAllBytes(i+".comp",block);
+                    block = Bin.DecompressLzx(block);
+                }
                 Bin.Magics.Add(ReadMagic(block));
                 Bin.Blocks.Add(block);
 

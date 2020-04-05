@@ -17,21 +17,13 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using OmegaForce3.Format.Bin;
+using OmegaForce3.Format.BinContainer;
 using OmegaForce3.Graphics.TileType;
 using OmegaForce3.Text;
-using Texim;
-using Yarhl.FileFormat;
 using Yarhl.FileSystem;
-using Yarhl.IO;
 using Yarhl.Media.Text;
-using TileFormat = OmegaForce3.Graphics.TileType.TileFormat;
 
 namespace OmegaForce3
 {
@@ -71,8 +63,18 @@ namespace OmegaForce3
                         child.Stream.WriteTo(output);
                     }
                     break;
-                case "-exporttext":
 
+                case "-pack":
+                    Node nodeFolder = NodeFactory.FromDirectory(args[1], "*.*");
+
+                    // 2
+                    Node nodoTbl = nodeFolder.TransformWith<Container2Bin>();
+
+                    // 3
+                    Node nodoBin = nodoTbl.TransformWith<Bin2Binary>();
+
+                    //4
+                    nodoBin.Stream.WriteTo(args[1] + "_new.bin");
                     break;
                 case "-importtext":
                     var nodo = NodeFactory.FromFile(args[1]);
