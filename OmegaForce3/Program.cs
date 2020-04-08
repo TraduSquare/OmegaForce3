@@ -21,7 +21,7 @@ using System.IO;
 using System.Reflection;
 using OmegaForce3.Format.Bin;
 using OmegaForce3.Format.BinContainer;
-using OmegaForce3.Graphics.TileType;
+using OmegaForce3.Format.Spr;
 using OmegaForce3.Text;
 using Yarhl.FileFormat;
 using Yarhl.FileSystem;
@@ -89,23 +89,9 @@ namespace OmegaForce3
                     nodoBinary.Stream.WriteTo(args[1] + "_new.bin");
                     break;
                 case "-exportgraphics":
-                    /*var nodoPal = NodeFactory.FromFile("0001.dat");
-                    var nodoTile = NodeFactory.FromFile("0002.dat");
-                    var nodoMap = NodeFactory.FromFile("0003.dat");
-
-                    Map map = nodoMap.TransformWith<Binary2Map>().GetFormatAs<Map>();
-
-                    Palette pal = nodoPal.TransformWith<Binary2Palette>().GetFormatAs<Palette>();
-
-                    var tile = nodoTile.TransformWith<Binary2TileFormat>().GetFormatAs<TileFormat>();
-
-                    map.CreateBitmap(tile.Pixels, pal).Save("hola2.png");
-                    */
-                    //string path = Path.Combine(outputPath, nDIG.Name + ".png");
-                    ImagenPuto hola = new ImagenPuto("0001.dat", "0002.dat", "0003.dat");
-                    hola.GenerateImage();
-                    //Convert2Image hola = new Convert2Image("0001.dat", "0002.dat", "0003.dat");
-                    //hola.GenerateFinalImage();
+                    var nodoPal = NodeFactory.FromFile(args[1]);
+                    var Bin2Spr = new Binary2Spr();
+                    Bin2Spr.GenerateImage(new BinaryFormat(nodoPal.Stream), Path.GetFileNameWithoutExtension(args[1]));
                     break;
             }
         }

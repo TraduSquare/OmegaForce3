@@ -36,6 +36,7 @@ namespace OmegaForce3.Format.Bin
         private Node CheckFile(byte[] file,uint magic, int i)
         {
             if (magic == 0x4D534720) return ConvertGsm(Decrypt(file, true), i); //Text file
+            if (magic == 20) return ConvertGeneric(file, i, ".spr"); //Sprite file
             return ConvertGeneric(file, i);
         }
 
@@ -49,9 +50,9 @@ namespace OmegaForce3.Format.Bin
                 .TransformWith<Binary2Gsm>().TransformWith<Gsm2Po>().TransformWith<Po2Binary>();
         }
 
-        private Node ConvertGeneric(byte[] file, int i)
+        private Node ConvertGeneric(byte[] file, int i, string extension=null)
         {
-            var name = GenerateName(i) + ".bin";
+            var name = GenerateName(i) + (extension ?? ".bin");
             NameList += name + "|" + Bin.Types[i] + "\n";
 
             Node child = NodeFactory.FromMemory(name);
