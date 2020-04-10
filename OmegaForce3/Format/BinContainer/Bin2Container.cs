@@ -37,6 +37,7 @@ namespace OmegaForce3.Format.Bin
         {
             if (magic == 0x4D534720) return ConvertGsm(Decrypt(file, true), i); //Text file
             if (magic == 20) return ConvertGeneric(file, i, ".spr"); //Sprite file
+            if (magic == 0x50584120 ) return ConvertGeneric(file, i, ".axp"); //Texture file
             return ConvertGeneric(file, i);
         }
 

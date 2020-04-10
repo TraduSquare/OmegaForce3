@@ -19,6 +19,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using OmegaForce3.Format.Axp;
 using OmegaForce3.Format.Bin;
 using OmegaForce3.Format.BinContainer;
 using OmegaForce3.Format.Spr;
@@ -92,6 +93,10 @@ namespace OmegaForce3
                     var nodoPal = NodeFactory.FromFile(args[1]);
                     var Bin2Spr = new Binary2Spr();
                     Bin2Spr.GenerateImage(new BinaryFormat(nodoPal.Stream), Path.GetFileNameWithoutExtension(args[1]));
+                    break;
+                case "-exportgraphics2":
+                    var nodol = NodeFactory.FromFile(args[1]);
+                    nodol.TransformWith<Binary2Axp>();
                     break;
             }
         }

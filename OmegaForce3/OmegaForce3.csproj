@@ -90,6 +90,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Format\Axp\Axp.cs" />
+    <Compile Include="Format\Axp\Binary2Axp.cs" />
     <Compile Include="Format\BinContainer\Bin.cs" />
     <Compile Include="Format\BinContainer\Bin2Binary.cs" />
     <Compile Include="Format\BinContainer\Bin2Container.cs" />
